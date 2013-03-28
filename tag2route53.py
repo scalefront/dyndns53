@@ -43,7 +43,8 @@ if __name__ == '__main__':
 
     # Get the value of the instance's tag "Name"
     instance_name = get_instance_name(instance)
-    record_name = instance_name.rstrip(args['name_rstrip'])
+    record_name = instance_name.rstrip(args['name_rstrip']).rstrip('.')
+
 
     # Determine the appropriate record value (pub/priv ip/dns_name)
     if args['record_type'] == 'A':
@@ -56,4 +57,11 @@ if __name__ == '__main__':
             record_value = instance.private_dns_name
         else:
             record_value = instance.public_dns_name
+
+    print "--------------------------------------------"
+    print "Instance Tag Name: %s" % instance_name
+    print "Record Name:       %s" % record_name
+    print "Record Type:       %s" % args['record_type']
+    print "Record Value:      %s" % record_value
+
     update_record(record_name, record_value, args['record_type'], args['zone_domain_name'])
