@@ -30,7 +30,7 @@ def update_record(record_name, record_value, record_type, zone_domain_name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Creates a route53 A-record based on the current instance's tag name.")
-    parser.add_argument('-n','--name-rstrip', help='Strip pattern from rhs of instnace Name tag value.', required=True, dest='name_rstrip')
+    parser.add_argument('-t','--truncate-name', help='Remove matching text from rhs of instance Name tag value.', required=True, dest='truncate_name')
     parser.add_argument('-z','--zone-domain-name', help='Zone Domain Name (e.g. aws-public.website.com)', required=True, dest='zone_domain_name')
     parser.add_argument('-i','--identity', help='Use instances public or private identity.', required=True, choices=['public', 'private'], dest='identity')
     parser.add_argument('-r','--record-type', help='Type of DNS record to create.', required=True, choices=['A', 'CNAME'], dest='record_type')
@@ -43,8 +43,10 @@ if __name__ == '__main__':
 
     # Get the value of the instance's tag "Name"
     instance_name = get_instance_name(instance)
+    import re
+    pattern = re.compile("%s$" % args['truncate_name'])
+    record_name = re.sub(pattern, "", instance_name)
     record_name = instance_name.rstrip(args['name_rstrip']).rstrip('.')
-
 
     # Determine the appropriate record value (pub/priv ip/dns_name)
     if args['record_type'] == 'A':
