@@ -47,6 +47,8 @@ if __name__ == '__main__':
     pattern = re.compile("%s$" % args['truncate_name'])
     record_name = re.sub(pattern, "", instance_name)
     record_name = '.'.join((record_name, args['zone_domain_name']))
+    if not record_name.endswith('.'):
+        record_name += '.'
 
     # Determine the appropriate record value (pub/priv ip/dns_name)
     if args['record_type'] == 'A':
