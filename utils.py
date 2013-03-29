@@ -32,5 +32,5 @@ def replace_parent_domain(domain_name, old_parent_domain, new_parent_domain, end
     truncated_domain = _truncate_domain(domain_name, old_parent_domain)
     new_domain_name = '%s.%s.' % (truncated_domain, new_parent_domain)
     if not end_with_period:
-        new_domain_name.rstrip('.')
+        new_domain_name = new_domain_name.rstrip('.')
     return new_domain_name
