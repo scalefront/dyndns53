@@ -13,5 +13,5 @@ if __name__ == '__main__':
     instance_id = get_current_instance_id()
     instance = get_instance(instance_id)
     tag_name = instance.tags['Name']
-    new_domain_name = replace_parent_domain(tag_name, args['truncate_name'], args['zone_domain_name'])
+    new_domain_name = replace_parent_domain(tag_name, args['truncate_name'], args['zone_domain_name'], end_with_period=False)
     print new_domain_name
