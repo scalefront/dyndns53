@@ -52,7 +52,7 @@ if __name__ == '__main__':
             record_value = instance.public_dns_name
 
     import datetime
-    print "--- %s ---" % datetime.datetime.now()
+    print "--- %s (register) ---" % datetime.datetime.now()
     print "Instance Tag Name: %s" % tag_name
     print "Record Name:       %s" % new_domain_name
     print "Record Type:       %s" % args['record_type']
