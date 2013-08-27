@@ -24,9 +24,9 @@ def _truncate_domain(domain_name, domain_suffix):
 
 def replace_parent_domain(domain_name, old_parent_domain, new_parent_domain, end_with_period=True):
     """
-    >>> generate_fqdn('web1.qa.apple.com', 'apple.com', 'aws-public.apple.com')
-    'web1.qa.aws-public.apple.com'
-    >>> generate_fqdn('a.b.c.d.e', 'c.d.e', 'y.z')
+    >>> replace_parent_domain('web1.qa.apple.com', 'apple.com', 'aws-public.apple.com')
+    'web1.qa.aws-public.apple.com.'
+    >>> replace_parent_domain('a.b.c.d.e', 'c.d.e', 'y.z', False)
     'a.b.y.z'
     """
     truncated_domain = _truncate_domain(domain_name, old_parent_domain)
