@@ -25,7 +25,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Deletes a route53 record created by dynamicdns.register_dynamicdns.")
     parser.add_argument('-p','--product-tld', help='Product TLD will be stripped from Name tag and replaced with Hosted Zone.', required=True, dest='product_tld')
-    parser.add_argument('-h','--hosted-zone', help='Hosted Zone (e.g. r53-pub.example.com)', required=True, dest='hosted_zone')
+    parser.add_argument('-z','--hosted-zone', help='Hosted Zone (e.g. r53-pub.example.com)', required=True, dest='hosted_zone')
     parser.add_argument('-r','--record-type', help='Type of DNS record to delete.', required=True, choices=['A', 'CNAME'], dest='record_type')
     args = vars(parser.parse_args())
 
