@@ -23,21 +23,21 @@ def delete_record(record_name, record_type, zone_domain_name):
 
 if __name__ == '__main__':
     import argparse
-    parser = argparse.ArgumentParser(description="Creates a route53 A-record based on the current instance's tag name.")
-    parser.add_argument('-t','--truncate-name', help='Remove matching text from rhs of instance Name tag value.', required=True, dest='truncate_name')
-    parser.add_argument('-z','--zone-domain-name', help='Zone Domain Name (e.g. ec2-pub.website.com)', required=True, dest='zone_domain_name')
-    parser.add_argument('-r','--record-type', help='Type of DNS record to create.', required=True, choices=['A', 'CNAME'], dest='record_type')
+    parser = argparse.ArgumentParser(description="Deletes a route53 record created by dynamicdns.register_dynamicdns.")
+    parser.add_argument('-p','--product-tld', help='Product TLD will be stripped from Name tag and replaced with Hosted Zone.', required=True, dest='product_tld')
+    parser.add_argument('-h','--hosted-zone', help='Hosted Zone (e.g. r53-pub.example.com)', required=True, dest='hosted_zone')
+    parser.add_argument('-r','--record-type', help='Type of DNS record to delete.', required=True, choices=['A', 'CNAME'], dest='record_type')
     args = vars(parser.parse_args())
 
     from utils import get_current_instance_id, get_instance, replace_parent_domain
     instance_id = get_current_instance_id()
     instance = get_instance(instance_id)
     tag_name = instance.tags['Name']
-    new_domain_name = replace_parent_domain(tag_name, args['truncate_name'], args['zone_domain_name'])
+    new_domain_name = replace_parent_domain(tag_name, args['product_tld'], args['hosted_zone'])
 
     import datetime
     print "--- %s (unregister) ---" % datetime.datetime.now()
     print "Instance Tag Name: %s" % tag_name
     print "Record Name:       %s" % new_domain_name
     print "Record Type:       %s" % args['record_type']
-    delete_record(new_domain_name, args['record_type'], args['zone_domain_name'])
+    delete_record(new_domain_name, args['record_type'], args['hosted_zone'])
