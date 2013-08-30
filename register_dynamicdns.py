@@ -30,16 +30,24 @@ if __name__ == '__main__':
             + "tag name and specfied hosted zone.\n" \
             + "\n" \
             + "AWS tag name should be in the following format:\n" \
-            + "    <subdomain segments>.<product tld>\n" \
+            + "    <instance segments>.<product tld>\n" \
             + "    e.g. web1.staging.example.com\n" \
-            + "         Subdomain Segments: web1.staging\n" \
+            + "         Instance Segments:  web1.staging\n" \
             + "         Product TLD:        example.com\n" \
             + "\n" \
             + "The created route53 record name will be in following format:\n" \
-            + "    <subdomain segments>.<hosted zone>\n" \
+            + "    <instance segments>.<hosted zone>\n" \
             + "    e.g. web1.staging.r53-pub.example.com\n" \
-            + "         Subdomain Segments: web1.staging\n" \
-            + "         Hosted Zone:        r53-pub.example.com (must use Route53 DNS servers)\n"
+            + "         Instance Segments:  web1.staging\n" \
+            + "         Hosted Zone:        r53-pub.example.com (must use Route53 DNS servers)\n" \
+            + "\n" \
+            + "A subdomain can be specified resulting in the following format:\n" \
+            + "    <subdomain>.<instance segments>.<hosted zone>\n" \
+            + "    e.g. api.web1.staging.r53-pub.example.com\n" \
+            + "         Subdomain:          api\n" \
+            + "         Instance Segments:  web1.staging\n" \
+            + "         Hosted Zone:        r53-pub.example.com (must use Route53 DNS servers)\n" \
+
     from argparse import RawTextHelpFormatter
     parser = argparse.ArgumentParser(description=desc, formatter_class=RawTextHelpFormatter)
     parser.add_argument('-p','--product-tld', help='Product TLD will be stripped from Name tag and replaced with Hosted Zone.', required=True, dest='product_tld')
@@ -47,6 +55,7 @@ if __name__ == '__main__':
     parser.add_argument('-i','--identity', help='Use instance\'s public or private identity.', required=True, choices=['public', 'private'], dest='identity')
     parser.add_argument('-r','--record-type', help='Type of DNS record to create.', required=True, choices=['A', 'CNAME'], dest='record_type')
     parser.add_argument('-s','--subdomain', help='Prefix a subdomain onto the record.', required=False, dest='subdomain')
+    parser.add_argument('-d','--dry-run', help='Don\'t actually register the domain.', required=False, default=False, dest='dry_run')
     args = vars(parser.parse_args())
 
     from utils import get_current_instance_id, get_instance, replace_parent_domain
@@ -76,4 +85,5 @@ if __name__ == '__main__':
     print "Record Name:       %s" % new_domain_name
     print "Record Type:       %s" % args['record_type']
     print "Record Value:      %s" % record_value
-    update_record(new_domain_name, record_value, args['record_type'], args['hosted_zone'])
+    if not args['dry_run']:
+        update_record(new_domain_name, record_value, args['record_type'], args['hosted_zone'])
