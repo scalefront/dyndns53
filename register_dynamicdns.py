@@ -46,6 +46,7 @@ if __name__ == '__main__':
     parser.add_argument('-z','--hosted-zone', help='Hosted Zone (e.g. r53-pub.example.com)', required=True, dest='hosted_zone')
     parser.add_argument('-i','--identity', help='Use instance\'s public or private identity.', required=True, choices=['public', 'private'], dest='identity')
     parser.add_argument('-r','--record-type', help='Type of DNS record to create.', required=True, choices=['A', 'CNAME'], dest='record_type')
+    parser.add_argument('-s','--subdomain', help='Prefix a subdomain onto the record.', required=False, dest='subdomain')
     args = vars(parser.parse_args())
 
     from utils import get_current_instance_id, get_instance, replace_parent_domain
@@ -53,6 +54,9 @@ if __name__ == '__main__':
     instance = get_instance(instance_id)
     tag_name = instance.tags['Name']
     new_domain_name = replace_parent_domain(tag_name, args['product_tld'], args['hosted_zone'])
+    if args['subdomain']:
+        from utils import join_domain
+        new_domain_name = join_domain(args['subdomain'], new_domain_name)
 
     # Determine the appropriate record value (pub/priv ip/dns_name)
     if args['record_type'] == 'A':

@@ -22,6 +22,20 @@ def _truncate_domain(domain_name, domain_suffix):
     truncated_domain = truncated_domain.rstrip('.')
     return truncated_domain
 
+def join_domain(subdomain, domain):
+    """
+    >>> join_domain('a.b.c', 'd.e')
+    'a.b.c.d.e'
+    >>> join_domain('a', 'b')
+    'a.b'
+    >>> join_domain('*', 'a.b.c')
+    '*.a.b.c'
+    """
+    subdomain = subdomain.rstrip('.')
+    domain = domain.lstrip('.')
+    fqdn = '.'.join([subdomain, domain])
+    return fqdn
+
 def replace_parent_domain(domain_name, old_parent_domain, new_parent_domain, end_with_period=True):
     """
     >>> replace_parent_domain('web1.qa.apple.com', 'apple.com', 'aws-public.apple.com')
@@ -30,7 +44,7 @@ def replace_parent_domain(domain_name, old_parent_domain, new_parent_domain, end
     'a.b.y.z'
     """
     truncated_domain = _truncate_domain(domain_name, old_parent_domain)
-    new_domain_name = '%s.%s.' % (truncated_domain, new_parent_domain)
-    if not end_with_period:
-        new_domain_name = new_domain_name.rstrip('.')
+    new_domain_name = join_domain(truncated_domain, new_parent_domain)
+    if end_with_period:
+        new_domain_name += '.'
     return new_domain_name
