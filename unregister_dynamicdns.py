@@ -31,18 +31,11 @@ if __name__ == '__main__':
     parser.add_argument('-d','--dry-run', help='Don\'t actually unregister the domain.', action='store_true', default=False, dest='dry_run')
     args = vars(parser.parse_args())
 
-    from utils import get_current_instance_id, get_instance, replace_parent_domain
-    instance_id = get_current_instance_id()
-    instance = get_instance(instance_id)
-    tag_name = instance.tags['Name']
-    domain_name = replace_parent_domain(tag_name, args['product_tld'], args['hosted_zone'])
-    if args['subdomain']:
-        from utils import join_domain
-        domain_name = join_domain(args['subdomain'], domain_name)
+    from domain_name import generate_domain_name
+    domain_name = generate_domain_name(args['product_tld'], args['hosted_zone'], args['subdomain'])
 
     import datetime
     print "--- %s (unregister) ---" % datetime.datetime.now()
-    print "Instance Tag Name: %s" % tag_name
     print "Record Name:       %s" % domain_name
     print "Record Type:       %s" % args['record_type']
     if args['dry_run']:

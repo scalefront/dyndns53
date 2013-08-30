@@ -1,14 +1,32 @@
-def get_current_instance_id():
-    import subprocess
-    p = subprocess.Popen("wget -q -O - http://169.254.169.254/latest/meta-data/instance-id", stdout=subprocess.PIPE, shell=True)
-    (output, err) = p.communicate()
-    return output
 
+_current_instance_id = None
+def get_current_instance_id():
+    global _current_instance_id
+    if _current_instance_id is None:
+       import subprocess
+       p = subprocess.Popen("wget -q -O - http://169.254.169.254/latest/meta-data/instance-id", stdout=subprocess.PIPE, shell=True)
+       (instance_id, err) = p.communicate()
+       _current_instance_id = instance_id
+    return _current_instance_id
+
+_instances = {}
 def get_instance(instance_id):
-    from boto.ec2.connection import EC2Connection
-    cxn = EC2Connection()
-    reservations = cxn.get_all_instances([instance_id])
-    return reservations[0].instances[0]
+    global _instances
+    if instance_id in _instances:
+        instance = _instances[instance_id]
+    else:
+        from boto.ec2.connection import EC2Connection
+        cxn = EC2Connection()
+        reservations = cxn.get_all_instances([instance_id])
+        instance = reservations[0].instances[0]
+        # Add instance to cache
+        _instances[instance_id] = instance
+    return instance
+
+def get_current_instance():
+    current_instance_id = get_current_instance_id()
+    instance = get_instance(current_instance_id)
+    return instance
 
 def _truncate_domain(domain_name, domain_suffix):
     """
