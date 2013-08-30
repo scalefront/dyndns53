@@ -28,6 +28,7 @@ if __name__ == '__main__':
     parser.add_argument('-z','--hosted-zone', help='Hosted Zone (e.g. r53-pub.example.com)', required=True, dest='hosted_zone')
     parser.add_argument('-r','--record-type', help='Type of DNS record to delete.', required=True, choices=['A', 'CNAME'], dest='record_type')
     parser.add_argument('-s','--subdomain', help='Prefix a subdomain onto the record.', required=False, dest='subdomain')
+    parser.add_argument('-d','--dry-run', help='Don\'t actually unregister the domain.', action='store_true', default=False, dest='dry_run')
     args = vars(parser.parse_args())
 
     from utils import get_current_instance_id, get_instance, replace_parent_domain
@@ -44,4 +45,7 @@ if __name__ == '__main__':
     print "Instance Tag Name: %s" % tag_name
     print "Record Name:       %s" % domain_name
     print "Record Type:       %s" % args['record_type']
-    delete_record(domain_name, args['record_type'], args['hosted_zone'])
+    if args['dry_run']:
+        print "--- Dry run only ---"
+    else:
+        delete_record(domain_name, args['record_type'], args['hosted_zone'])
