@@ -11,7 +11,7 @@ def delete_record(record_name, record_type, zone_domain_name):
     # Remove old records if they exist
     change = None
     for record in records:
-        if record.type != record_type or record.name != record_name:
+        if record.type != record_type or record.name != record_name.replace('*', '\\052'):
             continue
         change = records.add_change(action='DELETE',
                                     name=record.name,

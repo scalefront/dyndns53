@@ -10,7 +10,7 @@ def update_record(record_name, record_value, record_type, zone_domain_name):
     records = conn.get_all_rrsets(hosted_zone_id=zone.Id.split('/')[-1])
     # Remove old records if they exist
     for record in records:
-        if record.type != record_type or record.name != record_name:
+        if record.type != record_type or record.name != record_name.replace('*', '\\052'):
             continue
         change = records.add_change(action='DELETE',
                                     name=record.name,
