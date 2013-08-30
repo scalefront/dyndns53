@@ -32,7 +32,7 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     from domain_name import generate_domain_name
-    domain_name = generate_domain_name(args['product_tld'], args['hosted_zone'], args['subdomain'])
+    domain_name = generate_domain_name(args['product_tld'], args['hosted_zone'], args['subdomain'], end_with_period=True)
 
     import datetime
     print "--- %s (unregister) ---" % datetime.datetime.now()
