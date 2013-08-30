@@ -5,7 +5,7 @@ def generate_domain_name(product_tld, hosted_zone, subdomain=None, end_with_peri
     instance_id = get_current_instance_id()
     instance = get_instance(instance_id)
     tag_name = instance.tags['Name']
-    domain_name = replace_parent_domain(tag_name, args['product_tld'], args['hosted_zone'], end_with_period)
+    domain_name = replace_parent_domain(tag_name, product_tld, hosted_zone, end_with_period)
     if subdomain:
         from utils import join_domain
         domain_name = join_domain(subdomain, domain_name)
